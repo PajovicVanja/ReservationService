@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/reservation_service
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: nekipass123
+    volumes:
+      - ./logs:/app/logs
+
+  db:
+    build:
+      context: ./db
+    container_name: mysql-container-reservation
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: nekipass123
+      MYSQL_DATABASE: reservation_service
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
