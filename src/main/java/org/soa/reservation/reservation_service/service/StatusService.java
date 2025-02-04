@@ -14,6 +14,10 @@ public class StatusService {
     @Autowired
     private StatusRepository statusRepository;
 
+    // Get status by name
+    public Optional<Status> findStatusByName(String name) {
+        return statusRepository.findByName(name);
+    }
     // Get all statuses
     public List<Status> getAllStatuses() {
         return statusRepository.findAll();

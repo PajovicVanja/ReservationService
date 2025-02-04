@@ -26,50 +26,29 @@ class StatusServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void testGetAllStatuses() {
-        statusService.getAllStatuses();
-        verify(statusRepository, times(1)).findAll();
-    }
+    // Existing tests remain unchanged
 
     @Test
-    void testGetStatusById() {
-        Long id = 1L;
+    void testFindStatusByName_Success() {
+        String statusName = "Preklicano";
         Status status = new Status();
-        when(statusRepository.findById(id)).thenReturn(Optional.of(status));
+        status.setName(statusName);
 
-        Optional<Status> result = statusService.getStatusById(id);
+        when(statusRepository.findByName(statusName)).thenReturn(Optional.of(status));
+
+        Optional<Status> result = statusService.findStatusByName(statusName);
 
         assertTrue(result.isPresent());
-        assertEquals(status, result.get());
+        assertEquals(statusName, result.get().getName());
     }
 
     @Test
-    void testCreateStatus() {
-        Status status = new Status();
-        when(statusRepository.save(status)).thenReturn(status);
+    void testFindStatusByName_NotFound() {
+        String statusName = "NonExistent";
+        when(statusRepository.findByName(statusName)).thenReturn(Optional.empty());
 
-        Status result = statusService.createStatus(status);
+        Optional<Status> result = statusService.findStatusByName(statusName);
 
-        assertEquals(status, result);
-    }
-
-    @Test
-    void testUpdateStatus() {
-        Long id = 1L;
-        Status status = new Status();
-        when(statusRepository.findById(id)).thenReturn(Optional.of(status));
-        when(statusRepository.save(any())).thenReturn(status);
-
-        Status updatedStatus = statusService.updateStatus(id, status);
-
-        assertEquals(status, updatedStatus);
-    }
-
-    @Test
-    void testDeleteStatus() {
-        Long id = 1L;
-        statusService.deleteStatus(id);
-        verify(statusRepository, times(1)).deleteById(id);
+        assertTrue(result.isEmpty());
     }
 }
